@@ -1,6 +1,4 @@
 // CSV export: builds the same spreadsheet as the web app and opens the phone's share sheet.
-import { File, Paths } from 'expo-file-system';
-import * as Sharing from 'expo-sharing';
 import { Share } from 'react-native';
 import { slipCategory, profitOf } from './core';
 import { legTitle } from './cards';
@@ -18,11 +16,6 @@ export function toCsv(list, showMoney) {
   return [head, ...rows].map(r => r.map(q).join(',')).join('\n');
 }
 export async function shareCsv(name, text) {
-  try {
-    const f = new File(Paths.cache, name);
-    if (f.exists) f.delete();
-    f.create(); f.write(text);
-    if (await Sharing.isAvailableAsync()) { await Sharing.shareAsync(f.uri, { mimeType: 'text/csv', dialogTitle: 'Export bets', UTI: 'public.comma-separated-values-text' }); return; }
-  } catch (e) { /* fall back to sharing the text itself */ }
+  // Opens the phone's share sheet with the spreadsheet text (save to Files, AirDrop, Mail, Numbers, Excel…)
   await Share.share({ message: text, title: name });
 }
