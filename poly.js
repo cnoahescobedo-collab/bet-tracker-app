@@ -3,7 +3,7 @@
 import React, { createContext, useContext, useEffect, useRef, useState } from 'react';
 import { AppState } from 'react-native';
 import * as SecureStore from 'expo-secure-store';
-import { ed25519 } from '@noble/curves/ed25519';
+import nacl from './nacl';
 import { LEAGUES, norm, marketFor, catOf, polyCategory, decToAm } from './core';
 import { useApp, isPM, ls } from './store';
 import { getJSON, pool } from './espn';
@@ -27,7 +27,8 @@ export function pmSeed(secret) {
 }
 async function signedGet(signPath, fetchPath, key) {
   const ts = String(Date.now());
-  const sig = b64e(ed25519.sign(utf8(ts + 'GET' + signPath), pmSeed(key.secret)));   // same Ed25519 signature the web app makes with tweetnacl
+  const kp = nacl.sign.keyPair.fromSeed(pmSeed(key.secret));
+  const sig = b64e(nacl.sign.detached(utf8(ts + 'GET' + signPath), kp.secretKey));
   const r = await fetch('https://api.polymarket.us' + fetchPath, { headers: { 'X-PM-Access-Key': String(key.keyId || '').replace(/[\s"'`]/g, ''), 'X-PM-Timestamp': ts, 'X-PM-Signature': sig } });
   if (!r.ok) { const t = (await r.text().catch(() => '')).trim().slice(0, 160); const e = new Error(r.status === 401 || r.status === 403 ? '401' : 'HTTP ' + r.status); e.detail = t; throw e; }
   return r.json();
