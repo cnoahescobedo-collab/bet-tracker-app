@@ -1,25 +1,33 @@
 // Leaderboard: running profit per person, win rankings, best sport.
 import React, { useState } from 'react';
 import { View, Text, ScrollView, RefreshControl } from 'react-native';
-import Svg, { Path, Line, Circle } from 'react-native-svg';
 import { norm, tally, profitOf, slipCategory } from './core';
 import { useApp, settledAt, isPerson } from './store';
 import { C, S, T, money, signed, pct, statusColor } from './theme';
 import { Chips, Empty, Row, Spacer, Tag, Pill, Section } from './ui';
 
+// Running-profit line drawn with plain views (no chart library needed)
 function Spark({ points }) {
+  const [w, setW] = React.useState(0);
   if (points.length < 2) return null;
-  const W = 300, H = 44, P = 3; const ys = points.map(p => p.y);
+  const H = 44, P = 3; const ys = points.map(p => p.y);
   const lo = Math.min(0, ...ys), hi = Math.max(0, ...ys), span = (hi - lo) || 1;
-  const x = i => P + i * (W - 2 * P) / (points.length - 1), y = v => H - P - (v - lo) * (H - 2 * P) / span;
-  const d = points.map((p, i) => (i ? 'L' : 'M') + x(i).toFixed(1) + ' ' + y(p.y).toFixed(1)).join(' ');
+  const x = i => P + i * (w - 2 * P) / (points.length - 1), y = v => H - P - (v - lo) * (H - 2 * P) / span;
   const last = points[points.length - 1].y; const col = last > 0 ? C.win : last < 0 ? C.loss : C.muted;
+  const segs = [];
+  if (w) for (let i = 1; i < points.length; i++) {
+    const x1 = x(i - 1), y1 = y(points[i - 1].y), x2 = x(i), y2 = y(points[i].y);
+    const len = Math.hypot(x2 - x1, y2 - y1), ang = Math.atan2(y2 - y1, x2 - x1);
+    segs.push(<View key={i} style={{ position: 'absolute', left: (x1 + x2) / 2 - len / 2, top: (y1 + y2) / 2 - 1, width: len, height: 2, backgroundColor: col, borderRadius: 1, transform: [{ rotate: ang + 'rad' }] }} />);
+  }
   return (
-    <Svg width="100%" height={H} viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none">
-      <Line x1="0" x2={W} y1={y(0)} y2={y(0)} stroke={C.line} strokeDasharray="3 3" />
-      <Path d={d} fill="none" stroke={col} strokeWidth={2} />
-      <Circle cx={x(points.length - 1)} cy={y(last)} r={3} fill={col} />
-    </Svg>
+    <View style={{ height: H }} onLayout={e => setW(e.nativeEvent.layout.width)}>
+      {w ? <>
+        <View style={{ position: 'absolute', left: 0, right: 0, top: y(0), borderTopWidth: 1, borderStyle: 'dashed', borderColor: C.line }} />
+        {segs}
+        <View style={{ position: 'absolute', left: x(points.length - 1) - 3, top: y(last) - 3, width: 6, height: 6, borderRadius: 3, backgroundColor: col }} />
+      </> : null}
+    </View>
   );
 }
 const start = r => { const d = new Date(); d.setHours(0, 0, 0, 0); if (r === 'week') { d.setDate(d.getDate() - ((d.getDay() + 6) % 7)); return d.getTime(); } if (r === 'month') { d.setDate(1); return d.getTime(); } return 0; };

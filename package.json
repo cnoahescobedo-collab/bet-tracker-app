@@ -10,7 +10,6 @@
     "expo-image-picker": "~17.0.11",
     "react-native-webview": "13.15.0",
     "expo-secure-store": "~15.0.8",
-    "expo-crypto": "~15.0.9",
-    "react-native-svg": "15.12.1"
+    "expo-crypto": "~15.0.9"
   }
 }
