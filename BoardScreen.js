@@ -63,7 +63,7 @@ export default function BoardScreen() {
   const catMoney = who === 'all' ? !pool.some(z => !showMoney(z.name)) : showMoney(ppl.find(([k]) => k === who)?.[1] || '');
 
   return (
-    <ScrollView contentContainerStyle={{ padding: S.lg, gap: S.xl, paddingBottom: 60 }}
+    <ScrollView automaticallyAdjustKeyboardInsets keyboardDismissMode="interactive" keyboardShouldPersistTaps="handled" contentContainerStyle={{ padding: S.lg, gap: S.xl, paddingBottom: 60 }}
       refreshControl={<RefreshControl refreshing={pulling} tintColor={C.accent} onRefresh={async () => { setPulling(true); await refreshAll(); setPulling(false); }} />}>
       <Chips scroll={false} items={[['all', 'All-time'], ['month', 'This month'], ['week', 'This week']]} value={range} onChange={setRange} />
       <Section title={range === 'week' ? "This week's profit & loss" : range === 'month' ? "This month's profit & loss" : 'All-time profit & loss'}>
@@ -74,7 +74,7 @@ export default function BoardScreen() {
             return (
               <View key={c.k} style={{ backgroundColor: C.surface, borderRadius: 18, borderWidth: 1, borderColor: tone === 'won' ? C.win + '55' : tone === 'lost' ? C.loss + '55' : C.line, padding: S.lg, gap: 6 }}>
                 <Row><Text style={T.h2}>{c.name}</Text>{c.me ? <Tag label="YOU" color={C.accent} /> : null}<Spacer /><Pill small tone={tone} label={tone === 'won' ? 'In the green' : tone === 'lost' ? 'In the red' : 'Even'} /></Row>
-                <Text style={[T.hero, T.num, { color: statusColor(tone === 'push' ? null : tone), fontSize: 28 }]}>{sm ? signed(c.net) : c.t.roi != null ? (c.t.roi > 0 ? '+' : '') + Math.round(c.t.roi * 100) + '% ROI' : '—'}</Text>
+                <Text numberOfLines={1} adjustsFontSizeToFit style={[T.hero, T.num, { color: statusColor(tone === 'push' ? null : tone), fontSize: 28 }]}>{sm ? signed(c.net) : c.t.roi != null ? (c.t.roi > 0 ? '+' : '') + Math.round(c.t.roi * 100) + '% ROI' : '—'}</Text>
                 <Spark points={c.pts} />
                 <Text style={T.small}>{c.t.w}-{c.t.l}{c.t.p ? '-' + c.t.p : ''}{sm ? ` · ${money(c.t.staked)} staked` : ''}{c.t.roi != null ? ' · ROI ' + pct(c.t.roi) : ''}</Text>
                 {c.openN ? <Text style={T.small}>{c.openN} open{sm ? ` · ${money(c.atRisk)} riding` : ''}</Text> : null}
@@ -92,7 +92,7 @@ export default function BoardScreen() {
                 <Row><Text style={T.h3}>{r.name}</Text>{r.me ? <Tag label="YOU" color={C.accent} /> : null}</Row>
                 <Text style={T.small} numberOfLines={2}>{r.wins} win{r.wins === 1 ? '' : 's'} · {r.legsHit} legs hit{r.best ? ` · best: ${r.show ? '+' + money(r.best.amt) + ' on a ' : 'a '}${r.best.legs}-leg ${r.best.cat}` : ''}</Text>
               </View>
-              <Text style={[T.h2, T.num, { color: rankBy === 'wins' ? C.ink : C.win }]}>{big(r)}</Text>
+              <Text numberOfLines={1} adjustsFontSizeToFit style={[T.h2, T.num, { color: rankBy === 'wins' ? C.ink : C.win, maxWidth: 130 }]}>{big(r)}</Text>
             </View>
           ))}
       </Section>
@@ -102,7 +102,7 @@ export default function BoardScreen() {
           : <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: S.md }}>{cats.map((x, i) => (
             <View key={x.c} style={{ flexGrow: 1, flexBasis: '45%', backgroundColor: C.surface, borderRadius: 14, borderWidth: 1, borderColor: i === 0 ? C.accent + '66' : C.line, padding: S.md }}>
               <Row><Text style={T.tiny}>{x.c}</Text>{i === 0 ? <Tag label="BEST" color={C.accent} /> : null}</Row>
-              <Text style={[T.h1, T.num, { marginTop: 4 }]}>{pct(x.t.pct)}</Text>
+              <Text numberOfLines={1} adjustsFontSizeToFit style={[T.h1, T.num, { marginTop: 4 }]}>{pct(x.t.pct)}</Text>
               <Text style={T.small}>{x.t.w}-{x.t.l}{x.t.p ? '-' + x.t.p : ''} · <Text style={{ color: x.t.profit > 0 ? C.win : x.t.profit < 0 ? C.loss : C.muted }}>{catMoney ? signed(x.t.profit) : x.t.roi != null ? Math.round(x.t.roi * 100) + '% ROI' : ''}</Text></Text>
             </View>
           ))}</View>}

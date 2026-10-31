@@ -47,7 +47,7 @@ export default function HistoryScreen() {
   const whoOpts = [['all', 'Everyone'], ['me', 'Just me'], ...people.filter(([k]) => k !== norm(me.name))];
 
   return (
-    <ScrollView contentContainerStyle={{ padding: S.lg, gap: S.md, paddingBottom: 60 }} keyboardShouldPersistTaps="handled"
+    <ScrollView automaticallyAdjustKeyboardInsets keyboardDismissMode="interactive" keyboardShouldPersistTaps="handled" contentContainerStyle={{ padding: S.lg, gap: S.md, paddingBottom: 60 }}
       refreshControl={<RefreshControl refreshing={pulling} tintColor={C.accent} onRefresh={async () => { setPulling(true); await refreshAll(); setPulling(false); }} />}>
       <Field placeholder="Search player, team or market" value={f.q} onChangeText={v => upd('q', v)} />
       <Row gap={S.md}>
@@ -106,8 +106,8 @@ function HistRow({ s, open, onToggle }) {
           <Text style={T.h3} numberOfLines={1}>{s.name} · {s.legs.length}-leg {slipCategory(s)}</Text>
           <Text style={T.small} numberOfLines={1}>{d ? d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) : ''} · {hits}/{s.legs.length} legs hit{s.stake && sm ? ` · ${money(+s.stake)} stake` : ''}</Text>
         </View>
-        <View style={{ alignItems: 'flex-end' }}>
-          <Text style={[T.h3, T.num, { color: p > 0 ? C.win : p < 0 ? C.loss : C.muted }]}>{sm ? signed(p) : '$•••'}</Text>
+        <View style={{ alignItems: 'flex-end', flexShrink: 0 }}>
+          <Text numberOfLines={1} adjustsFontSizeToFit style={[T.h3, T.num, { color: p > 0 ? C.win : p < 0 ? C.loss : C.muted, maxWidth: 110 }]}>{sm ? signed(p) : '$•••'}</Text>
           {s.status === 'won' && sm && s.stake ? <Text style={T.small}>returned {money(Number(s.stake) + p)}</Text> : null}
         </View>
       </View>

@@ -49,7 +49,7 @@ export default function LiveScreen() {
   const whoOpts = [['all', 'Everyone'], ['me', 'Just me'], ...people.filter(([k]) => k !== norm(me.name))];
 
   return (
-    <ScrollView contentContainerStyle={{ padding: S.lg, gap: S.lg, paddingBottom: 60 }}
+    <ScrollView automaticallyAdjustKeyboardInsets keyboardDismissMode="interactive" keyboardShouldPersistTaps="handled" contentContainerStyle={{ padding: S.lg, gap: S.lg, paddingBottom: 60 }}
       refreshControl={<RefreshControl refreshing={pulling} tintColor={C.accent} onRefresh={async () => { setPulling(true); await refreshAll(); setPulling(false); }} />}>
       <View style={{ gap: S.sm }}>
         <Text style={T.tiny}>Sport for the next slip</Text>
@@ -93,8 +93,8 @@ function ByPerson({ open, openIds, toggle }) {
     return (
       <View key={g.name} style={{ gap: S.md }}>
         <Row>
-          <Text style={T.h2}>{g.name}</Text>{g.mine ? <Tag label="YOU" color={C.accent} /> : null}<Spacer />
-          <Text style={[T.small, T.num]}>{t.w}-{t.l}{t.p ? '-' + t.p : ''} · {showMoney(g.name) ? signed(t.profit) : '$•••'} · {g.slips.length} open</Text>
+          <Text style={[T.h2, { flexShrink: 1 }]} numberOfLines={1}>{g.name}</Text>{g.mine ? <Tag label="YOU" color={C.accent} /> : null}<Spacer />
+          <Text numberOfLines={1} adjustsFontSizeToFit style={[T.small, T.num, { flexShrink: 1 }]}>{t.w}-{t.l}{t.p ? '-' + t.p : ''} · {showMoney(g.name) ? signed(t.profit) : '$•••'} · {g.slips.length} open</Text>
         </Row>
         {g.slips.map(s => <SlipCard key={s.id} slip={s} open={openIds.has(s.id)} onToggle={() => toggle(s.id)} />)}
       </View>

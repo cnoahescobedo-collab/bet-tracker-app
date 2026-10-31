@@ -111,7 +111,7 @@ export function Stat({ label, value, sub, tone, wide }) {
     <View style={[st.stat, wide && { minWidth: '100%' }]}>
       <Text style={T.tiny}>{label}</Text>
       <Text style={[st.statVal, T.num, tone && { color: statusColor(tone) }]} numberOfLines={1} adjustsFontSizeToFit>{value}</Text>
-      {sub ? <Text style={T.small}>{sub}</Text> : null}
+      {sub ? <Text style={T.small} numberOfLines={2}>{sub}</Text> : null}
     </View>
   );
 }

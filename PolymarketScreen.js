@@ -23,7 +23,7 @@ export default function PolymarketScreen() {
     } catch (e) { setMsg(e.message); } finally { setBusy(false); }
   };
   return (
-    <ScrollView contentContainerStyle={{ padding: S.lg, gap: S.lg, paddingBottom: 60 }} keyboardShouldPersistTaps="handled">
+    <ScrollView automaticallyAdjustKeyboardInsets keyboardDismissMode="interactive" keyboardShouldPersistTaps="handled" contentContainerStyle={{ padding: S.lg, gap: S.lg, paddingBottom: 60 }}>
       <Card>
         <Row><Text style={T.h2}>Status</Text><Pill small tone={connected ? 'won' : 'push'} label={connected ? 'Connected' : 'Not connected'} /></Row>
         <Text style={T.small}>{key ? `Polymarket US key ${key.keyId.slice(0, 8)}… is saved in this phone's secure storage.` : member.polyAddress ? `Wallet ${member.polyAddress.slice(0, 6)}…${member.polyAddress.slice(-4)} is connected.` : 'Connect to import your Polymarket bets as slips automatically.'}</Text>

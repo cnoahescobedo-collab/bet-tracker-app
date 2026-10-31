@@ -68,8 +68,8 @@ export function Leg({ slip, leg: l, i, state: s, owner }) {
           <Text style={st.legBet} numberOfLines={2}>{legBet(l)}</Text>
         </View>
         {!pm && l.kind !== 'manual' && (
-          <View style={{ alignItems: 'flex-end' }}>
-            <Text style={[st.legCur, T.num, res && { color: statusColor(tone) }]}>{cur}</Text>
+          <View style={{ alignItems: 'flex-end', flexShrink: 0, maxWidth: 110 }}>
+            <Text numberOfLines={1} adjustsFontSizeToFit style={[st.legCur, T.num, res && { color: statusColor(tone) }]}>{cur}</Text>
             {of ? <Text style={T.small}>{of}</Text> : null}
           </View>
         )}
@@ -146,10 +146,10 @@ export function SlipCard({ slip: s, open, onToggle, showOwner }) {
   return (
     <View style={[st.card, { borderColor: border }]}>
       <Pressable onPress={onToggle} style={({ pressed }) => [st.head, pressed && { opacity: 0.85 }]}>
-        <View style={{ flex: 1 }}>
+        <View style={{ flex: 1, paddingRight: S.sm }}>
           {showOwner ? <Text style={[T.tiny, { marginBottom: 3 }]}>{s.name}</Text> : null}
           <Text style={T.h2}>{s.legs.length}-leg {slipCategory(s)}  <Text style={T.small}>{when}</Text></Text>
-          <Text style={[T.small, T.num, { marginTop: 2 }]}>
+          <Text numberOfLines={2} style={[T.small, T.num, { marginTop: 2 }]}>
             {s.stake ? amt(s.stake) : ''}{s.payout ? `  →  ${amt(s.payout)}` : ''}{s.odds ? `  ·  ${s.odds}` : ''}
             {s.source === 'model' ? '  ·  model pick' : pm ? '  ·  Polymarket' : ''}
           </Text>

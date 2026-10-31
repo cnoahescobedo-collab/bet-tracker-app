@@ -9,7 +9,7 @@ export default function ReactionsScreen() {
   const { notifs, actions } = useApp();
   useEffect(() => { if (notifs.some(n => !n.read)) actions.markNotifsRead(); }, [notifs.length]);
   return (
-    <ScrollView contentContainerStyle={{ padding: S.lg, gap: S.sm, paddingBottom: 60 }}>
+    <ScrollView automaticallyAdjustKeyboardInsets keyboardDismissMode="interactive" keyboardShouldPersistTaps="handled" contentContainerStyle={{ padding: S.lg, gap: S.sm, paddingBottom: 60 }}>
       {!notifs.length ? <Empty icon="notifications-outline" title="No reactions yet" body="When a friend reacts to one of your slips, it shows up here." />
         : notifs.slice(0, 60).map(n => (
           <View key={n.id} style={{ flexDirection: 'row', gap: S.md, alignItems: 'center', backgroundColor: n.read ? C.surface : C.raised, borderRadius: 14, borderWidth: 1, borderColor: n.read ? C.line : C.accent + '55', padding: S.md }}>

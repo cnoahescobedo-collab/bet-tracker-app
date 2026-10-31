@@ -17,7 +17,7 @@ export default function MembersScreen() {
   const list = [...byName.entries()].sort((a, b) => (b[1].pending - a[1].pending) || a[1].name.localeCompare(b[1].name));
   const run = (p, ok) => p.then(() => ok && toast(ok)).catch(e => toast("Couldn't update member: " + e.message, 'error'));
   return (
-    <ScrollView contentContainerStyle={{ padding: S.lg, gap: S.md, paddingBottom: 60 }}>
+    <ScrollView automaticallyAdjustKeyboardInsets keyboardDismissMode="interactive" keyboardShouldPersistTaps="handled" contentContainerStyle={{ padding: S.lg, gap: S.md, paddingBottom: 60 }}>
       <Fine>{isOwner ? 'You own this group. Approve new people here, or remove someone (they and their slips disappear for everyone).' : 'Only the group owner can approve or remove members.'}</Fine>
       {!list.length ? <Empty icon="people-outline" title="No members yet" /> : list.map(([k, g]) => {
         const isMe = k === norm(me.name), rem = g.removed === g.ids.length, pend = !rem && g.pending === g.ids.length - g.removed;

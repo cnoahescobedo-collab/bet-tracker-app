@@ -99,7 +99,7 @@ export default function SlipEditor({ title: title0, drafts: d0, stake: s0, odds:
           <Pressable onPress={onClose} hitSlop={10}><Ionicons name="close" size={26} color={C.ink} /></Pressable>
           <Text style={[T.h2, { flex: 1 }]} numberOfLines={2}>{title}</Text>
         </View>
-        <ScrollView contentContainerStyle={{ padding: S.lg, gap: S.lg, paddingBottom: insets.bottom + 40 }} keyboardShouldPersistTaps="handled">
+        <ScrollView keyboardDismissMode="interactive" keyboardShouldPersistTaps="handled" contentContainerStyle={{ padding: S.lg, gap: S.lg, paddingBottom: insets.bottom + 40 }}>
           {image ? <Image source={{ uri: image.uri }} style={{ width: '100%', height: 220, borderRadius: 14, backgroundColor: C.surface }} resizeMode="contain" /> : null}
           {prog != null && prog < 1 ? <View><Text style={T.small}>Reading the screenshot on your phone…</Text><Bar pct={prog} /></View> : null}
           {image && reading ? <Ocr image={image} onProgress={p => setProg(0.1 + 0.85 * p)} onText={gotText} onError={m => { setReading(false); setProg(null); setDrafts([blank(league)]); setTitle(m); }} /> : null}

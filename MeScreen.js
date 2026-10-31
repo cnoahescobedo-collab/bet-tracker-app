@@ -22,7 +22,7 @@ export default function MeScreen() {
   const [renaming, setRenaming] = useState(false);
 
   return (
-    <ScrollView contentContainerStyle={{ padding: S.lg, gap: S.xl, paddingBottom: 60 }} keyboardShouldPersistTaps="handled">
+    <ScrollView automaticallyAdjustKeyboardInsets keyboardDismissMode="interactive" keyboardShouldPersistTaps="handled" contentContainerStyle={{ padding: S.lg, gap: S.xl, paddingBottom: 60 }}>
       <Fine>Only you can see this screen. Your Polymarket account totals are read on this phone and never sent to the group.</Fine>
       <Section title="Polymarket US account" sub={!key ? 'Connect Polymarket US to see your full account history.' : histStatus || (histAt ? 'Updated ' + new Date(histAt).toLocaleString(undefined, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }) : 'Loading your history…')}>
         {!key ? <Button kind="ghost" icon="link-outline" label="Connect Polymarket" onPress={() => nav.go('polymarket')} /> : <PmAccount hist={hist} flow={flow} />}
@@ -83,7 +83,7 @@ function PmAccount({ hist, flow }) {
       {truth != null && (
         <Card style={{ gap: 6 }}>
           <Text style={T.tiny}>True result (money in vs. money now)</Text>
-          <Text style={[T.h1, T.num, { color: truth > 0 ? C.win : truth < 0 ? C.loss : C.ink }]}>{signed(truth)}</Text>
+          <Text numberOfLines={1} adjustsFontSizeToFit style={[T.h1, T.num, { color: truth > 0 ? C.win : truth < 0 ? C.loss : C.ink }]}>{signed(truth)}</Text>
           <Text style={T.small}>Deposited {money(flow.dep)}{flow.wd ? ` · withdrew ${money(flow.wd)}` : ''}{flow.bonus ? ` · bonuses ${money(flow.bonus)}` : ''} · cash now {money(flow.cash)} + open bets {money(flow.open)}{flow.pendingDep ? ` · ${money(flow.pendingDep)} deposit still pending` : ''}.</Text>
           <Text style={T.small}>{Math.abs(truth - net) >= 1 ? `The market-by-market total is ${money(Math.abs(truth - net))} ${truth > net ? 'lower' : 'higher'}. This line is the one that matches your bank.` : 'Matches the market-by-market total.'}</Text>
         </Card>
@@ -92,10 +92,10 @@ function PmAccount({ hist, flow }) {
         <Row style={{ padding: S.md, borderBottomWidth: 1, borderBottomColor: C.line }}><Text style={[T.tiny, { flex: 1 }]}>Sport</Text><Text style={[T.tiny, { width: 60, textAlign: 'right' }]}>Record</Text><Text style={[T.tiny, { width: 70, textAlign: 'right' }]}>Staked</Text><Text style={[T.tiny, { width: 76, textAlign: 'right' }]}>Net</Text></Row>
         {[...byCat].sort((a, b) => b[1].pnl - a[1].pnl).map(([c, t]) => (
           <Row key={c} style={{ padding: S.md, borderBottomWidth: 1, borderBottomColor: C.line }}>
-            <Text style={[T.body, { flex: 1 }]}>{c}</Text>
-            <Text style={[T.small, T.num, { width: 60, textAlign: 'right' }]}>{t.w}-{t.l}</Text>
-            <Text style={[T.small, T.num, { width: 70, textAlign: 'right' }]}>{money(t.stake)}</Text>
-            <Text style={[T.num, { width: 76, textAlign: 'right', fontWeight: '700', color: t.pnl > 0 ? C.win : t.pnl < 0 ? C.loss : C.muted }]}>{signed(t.pnl)}</Text>
+            <Text style={[T.body, { flex: 1 }]} numberOfLines={1}>{c}</Text>
+            <Text numberOfLines={1} adjustsFontSizeToFit style={[T.small, T.num, { width: 60, textAlign: 'right' }]}>{t.w}-{t.l}</Text>
+            <Text numberOfLines={1} adjustsFontSizeToFit style={[T.small, T.num, { width: 70, textAlign: 'right' }]}>{money(t.stake)}</Text>
+            <Text numberOfLines={1} adjustsFontSizeToFit style={[T.num, { width: 76, textAlign: 'right', fontWeight: '700', color: t.pnl > 0 ? C.win : t.pnl < 0 ? C.loss : C.muted }]}>{signed(t.pnl)}</Text>
           </Row>
         ))}
       </Card>

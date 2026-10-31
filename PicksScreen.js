@@ -60,7 +60,7 @@ export function TrendsScreen() {
 
   const add = it => nav.openEditor({ title: 'New slip from Player trends', drafts: [{ league: lg, kind: 'prop', side: it.side, player: it.player, team: it.ath?.team || '', market: it.label, line: it.line }] });
   return (
-    <ScrollView contentContainerStyle={{ padding: S.lg, gap: S.md, paddingBottom: 60 }}>
+    <ScrollView automaticallyAdjustKeyboardInsets keyboardDismissMode="interactive" keyboardShouldPersistTaps="handled" contentContainerStyle={{ padding: S.lg, gap: S.md, paddingBottom: 60 }}>
       <Fine>Players in today's games, with averages and hot or cold streaks from ESPN game logs. Where Polymarket has a prop, it shows how often the player cleared that exact line and whether the price looks like an edge.</Fine>
       <Chips items={TREND_LEAGUES.map(l => [l, LEAGUES[l].label])} value={lg} onChange={k => { setLg(k); ls.set('tLeague', k); setGame('all'); setStat('all'); }} />
       <Row gap={S.md}>
@@ -101,7 +101,7 @@ function TrendCard({ it, open, onToggle, onAdd }) {
           <Text style={T.small} numberOfLines={1}>{it.ath?.team} · {it.game.name}</Text>
           <Text style={[T.body, { marginTop: 4 }]}>{it.label} <Text style={{ fontWeight: '800' }}>{thr}</Text>{trend ? <Text style={{ color: trend[1], fontSize: 13 }}>  {trend[0]}</Text> : null}</Text>
         </View>
-        <View style={{ alignItems: 'flex-end' }}>
+        <View style={{ alignItems: 'flex-end', flexShrink: 0, paddingLeft: S.sm }}>
           <Text style={[T.h2, T.num]}>{Math.round(it.price * 100)}¢</Text>
           <Text style={T.small}>est. {Math.round(S_.p * 100)}% · <Text style={{ color: edge > 0 ? C.win : edge < 0 ? C.loss : C.muted, fontWeight: '700' }}>{edge > 0 ? '+' : ''}{edge}%</Text></Text>
         </View>
@@ -197,7 +197,7 @@ export function NewsScreen() {
     </>;
   }
   return (
-    <ScrollView contentContainerStyle={{ padding: S.lg, gap: S.md, paddingBottom: 60 }} keyboardShouldPersistTaps="handled">
+    <ScrollView automaticallyAdjustKeyboardInsets keyboardDismissMode="interactive" keyboardShouldPersistTaps="handled" contentContainerStyle={{ padding: S.lg, gap: S.md, paddingBottom: 60 }}>
       <Fine>Injury reports and recent headlines from ESPN for every team playing today. Headlines about injuries, minutes limits or rest are highlighted.</Fine>
       <Chips items={NEWS_LEAGUES.map(l => [l, LEAGUES[l].label])} value={lg} onChange={k => { setLg(k); ls.set('nLeague', k); }} />
       <Row gap={S.md}>
@@ -249,7 +249,7 @@ export function ValueScreen() {
   const tp = tally(model.filter(s => s.modelKind === 'props')), tt = tally(model.filter(s => s.modelKind !== 'props'));
 
   return (
-    <ScrollView contentContainerStyle={{ padding: S.lg, gap: S.xl, paddingBottom: 60 }}>
+    <ScrollView automaticallyAdjustKeyboardInsets keyboardDismissMode="interactive" keyboardShouldPersistTaps="handled" contentContainerStyle={{ padding: S.lg, gap: S.xl, paddingBottom: 60 }}>
       <Section title="Player prop parlays" sub="Built from Player trends edges: props where the player's hit rate on that exact line beats Polymarket's price. Injured players are skipped, and each parlay uses at most 2 legs from the same game.">
         <Chips items={TREND_LEAGUES.map(l => [l, LEAGUES[l].label])} value={lg} onChange={k => { setLg(k); ls.set('ppLeague', k); }} />
         <Row><Text style={[T.small, { flex: 1 }]}>{busy ? status || 'Checking props…' : pp ? `${pp.candidates} props with an edge · updated ${ago(ts.at)}` : ''}</Text><Button small kind="ghost" icon="refresh" label="Refresh" busy={busy} onPress={refresh} /></Row>
@@ -257,7 +257,7 @@ export function ValueScreen() {
           : !pp.list.length ? <Empty icon="flash-off-outline" title="No prop parlays right now" body={ts.note || 'Not enough props beat their prices today. Check back closer to tip-off, when lines move.'} />
             : pp.list.map((p, i) => (
               <View key={i} style={st.card}>
-                <Row style={{ alignItems: 'flex-start' }}><View style={{ flex: 1 }}><Row><Text style={T.h2}>{p.name}</Text>{p.alt ? <Tag label="ALT" /> : null}</Row><Text style={T.small}>{p.blurb}</Text></View><Pill tone="won" label={p.dec.toFixed(1) + 'x'} /></Row>
+                <Row style={{ alignItems: 'flex-start' }}><View style={{ flex: 1, paddingRight: S.sm }}><Row><Text style={[T.h2, { flexShrink: 1 }]}>{p.name}</Text>{p.alt ? <Tag label="ALT" /> : null}</Row><Text style={T.small}>{p.blurb}</Text></View><Pill tone="won" label={p.dec.toFixed(1) + 'x'} /></Row>
                 {p.legs.map((x, j) => (
                   <View key={j} style={{ borderTopWidth: 1, borderTopColor: C.line, paddingTop: S.sm }}>
                     <Row style={{ alignItems: 'flex-start' }}>
@@ -282,10 +282,11 @@ export function ValueScreen() {
           : !team.parlays.length ? <Empty icon="flash-off-outline" title="No good longshots right now" body="None of today's prices beat the estimates by enough. Check again closer to game time, when lines move." />
             : team.parlays.map((p, i) => (
               <View key={i} style={st.card}>
-                <Row><Text style={T.h2}>{p.legs.length}-leg longshot</Text><Tag label={i < 2 ? 'TRACKED' : 'IDEA'} color={i < 2 ? C.accent : undefined} /><Spacer /><Text style={T.small}>Pays <B>{decToAm(p.dec)}</B> · $10 → <B>{money(10 * p.dec)}</B></Text></Row>
+                <Row><Text style={T.h2}>{p.legs.length}-leg longshot</Text><Tag label={i < 2 ? 'TRACKED' : 'IDEA'} color={i < 2 ? C.accent : undefined} /></Row>
+                <Text style={T.small}>Pays <B>{decToAm(p.dec)}</B> · $10 → <B>{money(10 * p.dec)}</B></Text>
                 {p.legs.map((l, j) => (
                   <View key={j} style={{ borderTopWidth: 1, borderTopColor: C.line, paddingTop: S.sm }}>
-                    <Row><View style={{ flex: 1 }}><Text style={T.h3}>{l.team}</Text><Text style={T.small}>To win vs {l.opp} · {LEAGUES[l.league].label} · {new Date(l.start).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}</Text></View><View style={{ alignItems: 'flex-end' }}><Text style={[T.h3, T.num]}>{amS(l.ml)}</Text><Text style={T.small}>DraftKings</Text></View></Row>
+                    <Row style={{ alignItems: 'flex-start' }}><View style={{ flex: 1, paddingRight: S.sm }}><Text style={T.h3}>{l.team}</Text><Text style={T.small}>To win vs {l.opp} · {LEAGUES[l.league].label} · {new Date(l.start).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}</Text></View><View style={{ alignItems: 'flex-end', flexShrink: 0 }}><Text style={[T.h3, T.num]}>{amS(l.ml)}</Text><Text style={T.small}>DraftKings</Text></View></Row>
                     <Text style={T.small}>Odds imply {pctS(l.fair)} · ESPN {pctS(l.espn)} · Polymarket {pctS(l.poly)} · <Text style={{ color: C.win, fontWeight: '700' }}>+{Math.round(l.edge * 100)} pts</Text></Text>
                   </View>
                 ))}
@@ -300,7 +301,7 @@ export function ValueScreen() {
             {team.spots.slice(0, 15).map((s, i) => (
               <Row key={i} style={{ paddingHorizontal: S.md, paddingVertical: 10, borderTopWidth: 1, borderTopColor: C.line }}>
                 <View style={{ flex: 1 }}><Text style={T.h3} numberOfLines={1}>{s.team}</Text><Text style={T.small} numberOfLines={1}>vs {s.opp} · {LEAGUES[s.league].label} · {amS(s.ml)}</Text></View>
-                <Text style={[T.small, { width: 92, textAlign: 'right' }]}>{pctS(s.fair)} → {pctS((s.espn ?? s.poly))}</Text>
+                <Text numberOfLines={1} adjustsFontSizeToFit style={[T.small, { width: 92, textAlign: 'right' }]}>{pctS(s.fair)} → {pctS((s.espn ?? s.poly))}</Text>
                 <Text style={{ width: 44, textAlign: 'right', color: C.win, fontWeight: '800' }}>+{Math.round(s.edge * 100)}</Text>
               </Row>
             ))}
